@@ -8,8 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moo/features/user_auth/presentation/widgets/form_container_widget.dart';
-import 'package:moo/features/user_auth/presentation/widgets/imput_decoration.dart';
+import 'package:moo/UI/widgets/form_container_widget.dart';
+import 'package:moo/UI/widgets/imput_decoration.dart';
 import 'package:moo/global/common/toast.dart';
 import 'package:moo/services/firebase_user.dart';
 

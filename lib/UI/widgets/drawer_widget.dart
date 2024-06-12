@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moo/features/user_auth/presentation/widgets/list_title_widget.dart';
+import 'package:moo/UI/widgets/list_title_widget.dart';
 import 'package:moo/services/firebase_service_Animal.dart';
 
 class DrawerWidget extends StatelessWidget {

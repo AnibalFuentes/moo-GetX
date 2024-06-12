@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:moo/features/user_auth/presentation/tabs/animal_tab.dart';
-import 'package:moo/features/user_auth/presentation/tabs/batch_tab.dart';
-import 'package:moo/features/user_auth/presentation/tabs/farm_tab.dart';
+import 'package:moo/UI/tabs/animal_tab.dart';
+import 'package:moo/UI/tabs/batch_tab.dart';
+import 'package:moo/UI/tabs/farm_tab.dart';
 
-import 'package:moo/features/user_auth/presentation/tabs/trabajadores_tab.dart';
-import 'package:moo/features/user_auth/presentation/widgets/tab_widget.dart';
+import 'package:moo/UI/tabs/trabajadores_tab.dart';
+import 'package:moo/UI/widgets/tab_widget.dart';
 import 'package:moo/services/firebase_user.dart';
 
 class HomePage extends StatefulWidget {

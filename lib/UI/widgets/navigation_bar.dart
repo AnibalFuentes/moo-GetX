@@ -1,16 +1,12 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moo/features/user_auth/presentation/pages/animals/addAnimal.dart';
-import 'package:moo/features/user_auth/presentation/pages/animals/animal_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/batches/batch_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/farms/farm_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/home_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/porfile_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/production_page.dart';
-import 'package:moo/features/user_auth/presentation/widgets/drawer_widget.dart';
+import 'package:moo/UI/pages/animals/animal_page.dart';
+import 'package:moo/UI/pages/batches/batch_page.dart';
+import 'package:moo/UI/pages/home_page.dart';
+import 'package:moo/UI/pages/porfile_page.dart';
+import 'package:moo/UI/widgets/drawer_widget.dart';
 import 'package:moo/global/common/toast.dart';
 
 class NavBar extends StatefulWidget {

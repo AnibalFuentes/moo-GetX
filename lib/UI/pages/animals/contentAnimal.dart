@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get_utils/get_utils.dart';
-import 'package:moo/features/user_auth/presentation/pages/production/addProduction.dart';
+import 'package:moo/UI/pages/production/addProduction.dart';
 import 'package:moo/global/common/toast.dart';
 import 'package:moo/services/firebase_service_Animal.dart';
 import 'package:moo/services/service_produccion.dart';
