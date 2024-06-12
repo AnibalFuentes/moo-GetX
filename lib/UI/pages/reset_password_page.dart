@@ -2,8 +2,8 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moo/features/user_auth/presentation/pages/login_page.dart';
-import 'package:moo/features/user_auth/presentation/widgets/form_container_widget.dart';
+import 'package:moo/UI/pages/login_page.dart';
+import 'package:moo/UI/widgets/form_container_widget.dart';
 import 'package:moo/global/common/toast.dart';
 
 class ResetPasswordPage extends StatefulWidget {

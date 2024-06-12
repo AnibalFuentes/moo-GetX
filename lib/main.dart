@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:moo/controllers/auth_controller.dart';
+import 'UI/pages/login_page.dart';
+import 'UI/widgets/navigation_bar.dart';
+import 'UI/widgets/splash_screen.dart';
+import 'controllers/auth_controller.dart';
 
-import 'package:moo/features/app/splash_screen/splash_screen.dart';
-import 'package:moo/features/user_auth/presentation/pages/batches/batch_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/login_page.dart';
-import 'package:moo/features/user_auth/presentation/pages/sign_up_page.dart';
-import 'package:moo/features/user_auth/presentation/widgets/navigation_bar.dart';
+import 'UI/pages/batches/batch_page.dart';
+import 'UI/pages/sign_up_page.dart';
+
+
 //importaciones firebase
 
 Future<void> main() async {

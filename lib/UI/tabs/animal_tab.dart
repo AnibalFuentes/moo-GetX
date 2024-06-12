@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:moo/features/user_auth/presentation/pages/trabajador/AddTrabajdor.dart';
-import 'package:moo/features/user_auth/presentation/pages/batches/addBatch.dart';
-import 'package:moo/features/user_auth/presentation/pages/batches/editBatch.dart';
+import 'package:moo/UI/pages/trabajador/AddTrabajdor.dart';
+import 'package:moo/UI/pages/batches/addBatch.dart';
+import 'package:moo/UI/pages/batches/editBatch.dart';
 import 'package:moo/services/firebase_service_Animal.dart';
 import 'package:moo/services/firebase_service_Farm.dart';
 import 'package:moo/services/firebase_user.dart';

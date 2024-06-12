@@ -11,8 +11,8 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:moo/features/user_auth/presentation/pages/login_page.dart';
-import 'package:moo/features/user_auth/presentation/widgets/navigation_bar.dart';
+import 'package:moo/UI/pages/login_page.dart';
+import 'package:moo/UI/widgets/navigation_bar.dart';
 import 'package:moo/models/user.dart' as userModel;
 import 'package:moo/services/firebase_service_Farm.dart';
 

@@ -1,24 +1,27 @@
-import 'dart:ui';
-
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:moo/features/user_auth/presentation/pages/animals/addAnimalBar.dart';
-import 'package:moo/services/firebase_service_Animal.dart';
 
-class AnimalPage extends StatefulWidget {
-  const AnimalPage({super.key});
+
+import 'package:moo/services/firebase_service_Batch.dart';
+import 'package:moo/services/firebase_service_Farm.dart';
+
+class FarmPage extends StatefulWidget {
+  const FarmPage({Key? key}) : super(key: key);
 
   @override
-  State<AnimalPage> createState() => _AnimalPageState();
+  State<FarmPage> createState() => _FarmPageState();
 }
 
-class _AnimalPageState extends State<AnimalPage> {
-  String imagen='';
+class _FarmPageState extends State<FarmPage> {
+    final  currentUser = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title:  Text(currentUser.uid),
+      ),
       body: FutureBuilder(
-        future: getAllVacas(),
+        future: getFincass(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -32,32 +35,9 @@ class _AnimalPageState extends State<AnimalPage> {
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
-          } else if (snapshot.data == null || (snapshot.data as List).isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    onPressed: () async {
-                      /* await showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return const AddBatch();
-                        },
-                      );
-                      //Refresh */
-                      setState(() {});
-                    },
-                    icon: const Icon(Icons.add),
-                    iconSize: 70,
-                    color: Colors.grey,
-                  ),
-                  const Text(
-                    'No se encontraron datos',
-                    style: TextStyle(fontSize: 20, color: Colors.grey),
-                  ),
-                ],
-              ),
+          } else if (snapshot.data == null) {
+            return const Center(
+              child: Text('No se encontraron datos'),
             );
           } else {
             return ListView.builder(
@@ -76,7 +56,7 @@ class _AnimalPageState extends State<AnimalPage> {
                     ),
                     direction: DismissDirection.endToStart,
                     onDismissed: (direction) async {
-                      //await deleteBatch(snapshot.data?[index]["uid"]);
+                      await deleteBatch(snapshot.data?[index]["uid"]);
                       //snapshot.data?.removeAt(index);
                     },
                     confirmDismiss: (direction) async {
@@ -108,32 +88,22 @@ class _AnimalPageState extends State<AnimalPage> {
 
                       return result;
                     },
-                    
                     key: Key(snapshot.data?[index]["uid"]),
                     child: ListTile(
-                      
-                      leading: CircleAvatar(
-                        radius: 27,
-                        
-                        backgroundImage: NetworkImage('${snapshot.data?[index]['img']}'),
-                        
+                      leading: const Column(
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.green,
+                            child: Icon(
+                              Icons.add_box,
+                              color: Colors.white,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                        ],
                       ),
-
-                      onTap: () async {
-                        /* String nombreLote = snapshot.data?[index]["nombre"];
-                          
-                        String idLote = snapshot.data?[index]["uid"];
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) =>  ContentBatch(
-                            nombre: nombreLote,
-                            id: idLote,
-                          )),
-                        ); */
-                      },
                       title: Text(snapshot.data?[index]["nombre"]),
-                      subtitle: Text(snapshot.data?[index]["raza"]),
-                      //Text(snapshot.data?[index]['ra'].toString() ?? ''),
+                      
                       trailing: PopupMenuButton<String>(
                         onSelected: (String value) async {
                           if (value == 'Editar') {
@@ -144,21 +114,21 @@ class _AnimalPageState extends State<AnimalPage> {
                             String idLote = snapshot.data?[index]["uid"];
 
                             // Abrir la página de edición pasando los argumentos necesarios
-                            /*await showDialog(
+                            /* await showDialog(
                               context: context,
                               builder: (BuildContext context) {
                                 return EditBatch(
                                   nombre: nombreLote,
-                                  cantidad: cantidadLote,
+                                 
                                   id: idLote,
                                 );
                               },
-                            );*/
+                            ); */
                             setState(() {
                               // Puedes agregar lógica de actualización aquí si es necesario
                             });
-                          } else {
-                            //await deleteBatch(snapshot.data?[index]["uid"]);
+                          }else{
+                            await deleteBatch(snapshot.data?[index]["uid"]);
                           }
                         },
                         color: const Color.fromARGB(255, 201, 143, 122),
@@ -194,23 +164,23 @@ class _AnimalPageState extends State<AnimalPage> {
           }
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 201, 143, 122),
-        onPressed: () async {
-          await showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return const AddAnimalBar();
-            },
-          );
-          //Refresh
-          setState(() {});
-        },
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: const Color.fromARGB(255, 201, 143, 122),
+      //   onPressed: () async {
+      //     await showDialog(
+      //       context: context,
+      //       builder: (BuildContext context) {
+      //         return const AddBatch();
+      //       },
+      //     );
+      //     //Refresh
+      //     setState(() {});
+      //   },
+      //   child: const Icon(
+      //     Icons.add,
+      //     color: Colors.white,
+      //   ),
+      // ),
     );
   }
 }
