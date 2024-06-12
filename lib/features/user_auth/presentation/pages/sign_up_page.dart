@@ -1,9 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:gap/gap.dart';
+import 'package:moo/controllers/auth_controller.dart';
 import 'package:moo/features/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:moo/features/user_auth/presentation/pages/login_page.dart';
 import 'package:moo/features/user_auth/presentation/widgets/form_container_widget.dart';
@@ -22,15 +26,16 @@ class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuthServices _auth = FirebaseAuthServices();
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nombreFincaController = TextEditingController();
   final TextEditingController _tamanoFincaController = TextEditingController();
-  final TextEditingController _apellidoController = TextEditingController();
 
   bool isSigningUp = false;
+  bool showProgressBar = false;
 
   @override
   void dispose() {
@@ -40,6 +45,45 @@ class _SignUpPageState extends State<SignUpPage> {
     _nombreFincaController.dispose();
     super.dispose();
   }
+
+  void _selectImageSource() {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: const Icon(Icons.camera_alt),
+                title: const Text('Cámara'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await authenticationController.pickImageFileFromCamera();
+                  setState(() {
+                    authenticationController.imageFile;
+                  });
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo),
+                title: const Text('Galería'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  await authenticationController.pickImageFileFromGallery();
+                  setState(() {
+                    authenticationController.imageFile;
+                  });
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  var authenticationController = AuthenticationController.authController;
 
   @override
   Widget build(BuildContext context) {
@@ -97,35 +141,30 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                   ],
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
-                const Text(
-                  'Datos de La finca',
-                ),
-                Column(
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                      width: 20,
-                    ),
-                    FormContainerWidget(
-                      hintText: "Nombre de la finca",
-                      controller: _nombreFincaController,
-                    ),
-                    const SizedBox(
-                      height: 20,
-                      width: 20,
-                    ),
-                    FormContainerWidget(
-                      hintText: "Tamaño de la finca",
-                      controller: _tamanoFincaController,
-                      inputType: TextInputType.number,
-                    ),
-                  ],
-                ),
                 const Text(
                   'Datos de Usuario',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    _selectImageSource();
+                  },
+                  child: authenticationController.imageFile == null
+                      ? const CircleAvatar(
+                          radius: 80,
+                          backgroundImage:
+                              AssetImage('assets/icon/granjeroI.png'))
+                      : Container(
+                          width: 180,
+                          height: 180,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey,
+                              image: DecorationImage(
+                                  fit: BoxFit.fitHeight,
+                                  image: FileImage(File(authenticationController
+                                      .imageFile!.path)))),
+                        ),
                 ),
                 Column(
                   children: [
@@ -143,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     FormContainerWidget(
                       hintText: "Apellido",
-                      controller: _apellidoController,
+                      controller: _lastNameController,
                     ),
                     const SizedBox(
                       height: 20,
@@ -180,6 +219,35 @@ class _SignUpPageState extends State<SignUpPage> {
                 const SizedBox(
                   height: 10,
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Text(
+                  'Datos de La finca',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                ),
+                Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                      width: 20,
+                    ),
+                    FormContainerWidget(
+                      hintText: "Nombre de la finca",
+                      controller: _nombreFincaController,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                      width: 20,
+                    ),
+                    FormContainerWidget(
+                      hintText: "Tamaño de la finca",
+                      controller: _tamanoFincaController,
+                      inputType: TextInputType.number,
+                    ),
+                  ],
+                ),
+                const Gap(20),
                 GestureDetector(
                   onTap: _signUp,
                   child: Container(
@@ -242,39 +310,46 @@ class _SignUpPageState extends State<SignUpPage> {
       isSigningUp = true;
     });
 
-    String email = _emailController.text;
-    String password = _passwordController.text;
-    String name = _nameController.text;
+    // String email = _emailController.text;
+    // String password = _passwordController.text;
+    // String name = _nameController.text;
+    int? tamanoFinca = int.tryParse(_tamanoFincaController.text);
+    await authenticationController.createNewUserAccountAndFarm(
+        _nameController.text.trim(),
+        _lastNameController.text.trim(),
+        null,
+        null,
+        _phoneController.text.trim(),
+        _emailController.text.trim(),
+        _passwordController.text.trim(),
+        authenticationController.profileImage,
+        _nombreFincaController.text.trim(),
+        tamanoFinca!);
 
-    User? user = await _auth.signUpWithEmailAndPassword(email, password);
+    //User? user = await _auth.signUpWithEmailAndPassword(email, password);
 
     setState(() {
       isSigningUp = false;
     });
 
-    if (user != null) {
-      final currentUser = FirebaseAuth.instance.currentUser!;
-      currentUser.updateDisplayName('propietario');
-      //user.displayName = _nameController.text;
-      String userId = user.uid; // Obtiene el ID del usuario recién creado
-      crearFinca(userId);
-      crearUser(userId); // Pasa el ID del usuario a la función crearFinca
-      showToast(message: "Usuario creado exitosamente");
-      Navigator.pushNamed(context, "/login");
-    } else {
-      showToast(message: "Ha ocurrido un error");
-    }
+    // if (user != null) {
+    //   final currentUser = FirebaseAuth.instance.currentUser!;
+    //   currentUser.updateDisplayName('propietario');
+    //   //user.displayName = _nameController.text;
+    //   String userId = user.uid; // Obtiene el ID del usuario recién creado
+    //   crearFinca(userId);
+    //   createUser(userId); // Pasa el ID del usuario a la función crearFinca
+    //   showToast(message: "Usuario creado exitosamente");
+    //   Navigator.pushNamed(context, "/login");
+    // } else {
+    //   showToast(message: "Ha ocurrido un error");
+    // }
   }
 
-  void crearFinca(String userId) async {
-    int tamano = int.tryParse(_tamanoFincaController.text) ?? 0;
+  // void crearFinca(String userId) async {
+  //   int tamano = int.tryParse(_tamanoFincaController.text) ?? 0;
 
-    // Aquí puedes usar userId para asociar la finca con el usuario
-    await addFarm(_nombreFincaController.text, tamano, userId);
-  }
-
-  void crearUser(String userId) async {
-    await addUserP(userId, userId,_nameController.text, _apellidoController.text,
-        _emailController.text, _phoneController.text);
-  }
+  //   // Aquí puedes usar userId para asociar la finca con el usuario
+  //   await addFarm(_nombreFincaController.text, tamano, userId);
+  // }
 }

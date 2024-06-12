@@ -1,7 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/get_instance.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:moo/controllers/auth_controller.dart';
 
 import 'package:moo/features/app/splash_screen/splash_screen.dart';
 import 'package:moo/features/user_auth/presentation/pages/batches/batch_page.dart';
@@ -15,14 +18,15 @@ Future<void> main() async {
   if (kIsWeb) {
     await Firebase.initializeApp(
         options: const FirebaseOptions(
-      apiKey: "AIzaSyBOkRQvsxoUvvG_k-3kxY8p55fjwegINTM",
-      appId: "1:173997870344:web:fda390459bc809ff7530bd",
-      messagingSenderId: "173997870344",
-      projectId: "moo-app-6485e",
-      storageBucket:"gs://moo-app-6485e.appspot.com"
-    ));
+            apiKey: "AIzaSyBOkRQvsxoUvvG_k-3kxY8p55fjwegINTM",
+            appId: "1:173997870344:web:fda390459bc809ff7530bd",
+            messagingSenderId: "173997870344",
+            projectId: "moo-app-6485e",
+            storageBucket: "gs://moo-app-6485e.appspot.com"));
   }
-  await Firebase.initializeApp();
+  await Firebase.initializeApp().then((value) {
+    Get.put(AuthenticationController());
+  });
   runApp(const MyApp());
 }
 
@@ -34,7 +38,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Moo App',
-      theme: ThemeData(primarySwatch: Colors.green),
+      theme: ThemeData(primarySwatch: Colors.green, useMaterial3: true),
       routes: {
         '/': (context) => const SplashScreen(
               child: LoginPage(),
@@ -44,7 +48,6 @@ class MyApp extends StatelessWidget {
         '/home': (context) => const NavBar(),
         '/batch': (context) => const BatchPage(),
       },
-      
     );
   }
 }

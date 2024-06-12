@@ -4,8 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:gap/gap.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:moo/controllers/auth_controller.dart';
 import 'package:moo/features/user_auth/firebase_auth_implementation/firebase_auth_services.dart';
 import 'package:moo/features/user_auth/presentation/pages/home_page.dart';
 import 'package:moo/features/user_auth/presentation/pages/reset_password_page.dart';
@@ -31,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
+ var authenticationController = AuthenticationController.authController;
   @override
   void dispose() {
     _emailController.dispose();
@@ -89,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 15,
                 ),
                 FormContainerWidget(
+                  
                   hintText: "Correo electrónico",
                   controller: _emailController,
                   inputType: TextInputType.emailAddress,
@@ -133,7 +138,17 @@ class _LoginPageState extends State<LoginPage> {
                   height: 15,
                 ),
                 GestureDetector(
-                  onTap: _signIn,
+                  onTap: (){
+
+                    if(_emailController.text.trim().isNotEmpty && _passwordController.text.trim().isNotEmpty){
+                      
+                    _signIn();
+
+                    }
+                    else{
+                      Get.snackbar('Email/password is missing', 'Please fill a field.');
+                    }
+                  },
                   child: Container(
                     width: double.infinity,
                     height: 50,
@@ -245,46 +260,50 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _isSigning = true;
     });
+    
+    await authenticationController.loginUser(
+      _emailController.text.trim(), 
+      _passwordController.text.trim());
 
-    String email = _emailController.text;
-    String password = _passwordController.text;
+    // String email = _emailController.text;
+    // String password = _passwordController.text;
 
-    try {
-      User? user = await _auth.signInWithEmailAndPassword(email, password);
+    // try {
+    //   User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-      if (user != null) {
-        final currentUser = FirebaseAuth.instance.currentUser!;
-        // Verificar el estado del usuario en Firestore
-        List<Map<String, dynamic>> usuarios = await getUserById(currentUser.uid);
-        if (usuarios.isNotEmpty) {
-          if (!mounted) return; // Verifica si el widget está montado
-          setState(() {
-            state = usuarios.first['state'];
-          });
-        }
+    //   if (user != null) {
+    //     final currentUser = FirebaseAuth.instance.currentUser!;
+    //     // Verificar el estado del usuario en Firestore
+    //     List<Map<String, dynamic>> usuarios = await getUserById(currentUser.uid);
+    //     if (usuarios.isNotEmpty) {
+    //       if (!mounted) return; // Verifica si el widget está montado
+    //       setState(() {
+    //         state = usuarios.first['state'];
+    //       });
+    //     }
 
-        if (state == true) {
-          showToast(message: "Inicio de sesión exitoso");
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (builder) => const NavBar()),
-            (route) => false,
-          );
-        } else {
-          showToast(message: "Usuario inactivo. Contacta al administrador.");
-          await _firebaseAuth.signOut(); // Cerrar sesión del usuario inactivo
-        }
-      } else {
-        showToast(message: "Ha ocurrido un error");
-      }
-    } catch (e) {
-      showToast(message: "Error al iniciar sesión: $e");
-    } finally {
+    //     //if (state == true) {
+    //      showToast(message: "Inicio de sesión exitoso");
+    //       Navigator.pushAndRemoveUntil(
+    //         context,
+    //         MaterialPageRoute(builder: (builder) => const NavBar()),
+    //         (route) => false,
+    //       );
+    //    // } else {
+    //       // showToast(message: "Usuario inactivo. Contacta al administrador.");
+    //       // await _firebaseAuth.signOut(); // Cerrar sesión del usuario inactivo
+    //    // }
+    //   } else {
+    //     showToast(message: "Ha ocurrido un error");
+    //   }
+    // } catch (e) {
+    //   showToast(message: "Error al iniciar sesión: $e");
+    // } finally {
       setState(() {
         _isSigning = false;
       });
     }
-  }
+  
 
   void _signInWithGoogle() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -362,4 +381,5 @@ class _LoginPageState extends State<LoginPage> {
       showToast(message: "Error al iniciar sesión con Facebook: $e");
     }
   }
+
 }
